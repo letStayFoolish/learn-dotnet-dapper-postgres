@@ -1,5 +1,6 @@
 using learning_dotnet_dapper_postgres.Entities;
 using learning_dotnet_dapper_postgres.Interfaces;
+using learning_dotnet_dapper_postgres.Mappers;
 using learning_dotnet_dapper_postgres.Models;
 
 namespace learning_dotnet_dapper_postgres.Services;
@@ -26,9 +27,20 @@ public class UserService : IUserService
     return foundUser;
   }
 
-  public Task CreateNewUserAsync(CreateRequest userModel)
+  public async Task CreateNewUserAsync(CreateRequest requestModel)
   {
-    throw new NotImplementedException();
+    // validation
+    var userFound = await _userRepository.GetUserByEmailAsync(requestModel.Email);
+    if (userFound != null)
+    {
+      throw new Exception("Email already exists");
+    }
+    
+    // Mapping
+    var userModel = requestModel.ToUser();
+    userModel.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userModel.PasswordHash);
+    
+    await _userRepository.CreateNewUserAsync(userModel);
   }
 
   public Task UpdateUserAsync(int UserId, UpdateRequest userModel)

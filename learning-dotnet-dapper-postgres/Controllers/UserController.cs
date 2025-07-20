@@ -1,5 +1,6 @@
 using learning_dotnet_dapper_postgres.Entities;
 using learning_dotnet_dapper_postgres.Interfaces;
+using learning_dotnet_dapper_postgres.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace learning_dotnet_dapper_postgres.Controllers;
@@ -44,5 +45,17 @@ public class UserController : ControllerBase
     }
 
     return Ok(foundUser);
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> CreateUser([FromBody] CreateRequest requestModel)
+  {
+    await _userService.CreateNewUserAsync(requestModel);
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+    
+    return Ok("Success!");
   }
 }

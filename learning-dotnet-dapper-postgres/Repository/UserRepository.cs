@@ -29,20 +29,34 @@ public class UserRepository : IUserRepository
     using var connection = _context.CreateConnection();
 
     var sql = """
-              SELECT * FROM Users WHERE id = @id
+              SELECT * FROM Users 
+              WHERE id = @id
               """;
 
     return await connection.QuerySingleOrDefaultAsync<User>(sql, new { id });
   }
 
-  public Task<User?> GetUserByEmailAsync(string email)
+  public async Task<User?> GetUserByEmailAsync(string email)
   {
-    throw new NotImplementedException();
+    var sql = """
+              SELECT * FROM Users 
+              WHERE email = @email;
+              """;
+    
+    using var connection = _context.CreateConnection();
+    return await connection.QuerySingleOrDefaultAsync<User>(sql, new {email});
   }
 
-  public Task CreateNewUserAsync(User user)
+  public async Task CreateNewUserAsync(User user)
   {
-    throw new NotImplementedException();
+    var connection = _context.CreateConnection();
+
+    var sql = """
+              INSERT INTO Users (Title, FirstName, LastName, Email, Role, PasswordHash)
+              VALUES (@Title, @FirstName, @LastName, @Email, @Role, @PasswordHash); 
+              """;
+    
+    await connection.ExecuteAsync(sql, user);
   }
 
   public Task UpdateUserAsync(User user)
