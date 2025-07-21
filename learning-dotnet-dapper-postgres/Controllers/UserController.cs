@@ -50,12 +50,18 @@ public class UserController : ControllerBase
   [HttpPost]
   public async Task<IActionResult> CreateUser([FromBody] CreateRequest requestModel)
   {
+    bool userExists = await _userService.IsUserEmailAlreadyExistAsync(requestModel.Email!);
+    if (userExists)
+    {
+      return Conflict(new { message = "User with the email already exist!" });
+    }
     await _userService.CreateNewUserAsync(requestModel);
+
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
     }
-    
-    return Ok("Success!");
+
+    return Ok(new { message = "User created successfully" });
   }
 }
