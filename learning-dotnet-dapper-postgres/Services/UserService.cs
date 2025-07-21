@@ -80,8 +80,6 @@ public class UserService : IUserService
       userToUpdate.PasswordHash = HashPasswordExtension.HashPassword(updateModel.Password);
     }
     
-    // var userModel = updateModel.ToUser();
-    
     await _userRepository.UpdateUserAsync(userToUpdate);
   }
 

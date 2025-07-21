@@ -1,4 +1,3 @@
-using learning_dotnet_dapper_postgres.Entities;
 using learning_dotnet_dapper_postgres.Interfaces;
 using learning_dotnet_dapper_postgres.Models;
 using Microsoft.AspNetCore.Mvc;
