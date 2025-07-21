@@ -52,7 +52,7 @@ public class UserController : ControllerBase
     bool userExists = await _userService.IsUserEmailAlreadyExistAsync(requestModel.Email!);
     if (userExists)
     {
-      return Conflict(new { message = "User with the email already exist!" });
+      return Conflict(new { message = $"User with the {requestModel.Email} email already exist!" });
     }
 
     await _userService.CreateNewUserAsync(requestModel);
@@ -75,6 +75,14 @@ public class UserController : ControllerBase
     if (userFound == null)
     {
       return NotFound();
+    }
+    
+    // check if email already exists in the database
+    var isEmailExist = await _userService.IsUserEmailAlreadyExistAsync(requestModel.Email!);
+
+    if (isEmailExist)
+    {
+      return Conflict(new { message = $"User with the {requestModel.Email!} email already exist!" });
     }
 
     if (!string.IsNullOrEmpty(requestModel.Password))
