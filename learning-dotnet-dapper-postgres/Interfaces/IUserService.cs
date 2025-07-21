@@ -9,6 +9,6 @@ public interface IUserService
   Task<User?> GetUserByIdAsync(int id);
   Task<bool> IsUserEmailAlreadyExistAsync(string emailAddress);
   Task CreateNewUserAsync(CreateRequest userModel);
-  Task UpdateUserAsync(int UserId, UpdateRequest userModel);
+  Task UpdateUserAsync(UpdateRequest userModel, User userToUpdate);
   Task DeleteUserAsync(int UserId);
 }

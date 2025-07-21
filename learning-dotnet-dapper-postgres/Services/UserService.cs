@@ -28,11 +28,6 @@ public class UserService : IUserService
   {
     var foundUser = await _userRepository.GetUserByIdAsync(id);
 
-    if (foundUser == null)
-    {
-      throw new KeyNotFoundException("User not found");
-    }
-
     return foundUser;
   }
 
@@ -53,9 +48,41 @@ public class UserService : IUserService
     await _userRepository.CreateNewUserAsync(userModel);
   }
 
-  public Task UpdateUserAsync(int UserId, UpdateRequest userModel)
+  public async Task UpdateUserAsync(UpdateRequest updateModel, User userToUpdate)
   {
-    throw new NotImplementedException();
+    if (!string.IsNullOrEmpty(updateModel.Title))
+    {
+      userToUpdate.Title = updateModel.Title;
+    }
+    
+    if (!string.IsNullOrEmpty(updateModel.FirstName))
+    {
+      userToUpdate.FirstName = updateModel.FirstName;
+    }
+    
+    if (!string.IsNullOrEmpty(updateModel.LastName))
+    {
+      userToUpdate.LastName = updateModel.LastName;
+    }
+    
+    if (!string.IsNullOrEmpty(updateModel.Email))
+    {
+      userToUpdate.Email = updateModel.Email;
+    }
+
+    if (!string.IsNullOrEmpty(updateModel.Role))
+    {
+      userToUpdate.Role = (Role)Enum.Parse(typeof(Role), updateModel.Role);
+    }
+    
+    if (!string.IsNullOrEmpty(updateModel.Password))
+    {
+      userToUpdate.PasswordHash = HashPasswordExtension.HashPassword(updateModel.Password);
+    }
+    
+    // var userModel = updateModel.ToUser();
+    
+    await _userRepository.UpdateUserAsync(userToUpdate);
   }
 
   public Task DeleteUserAsync(int UserId)

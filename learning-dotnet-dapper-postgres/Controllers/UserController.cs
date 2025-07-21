@@ -55,6 +55,7 @@ public class UserController : ControllerBase
     {
       return Conflict(new { message = "User with the email already exist!" });
     }
+
     await _userService.CreateNewUserAsync(requestModel);
 
     if (!ModelState.IsValid)
@@ -64,4 +65,33 @@ public class UserController : ControllerBase
 
     return Ok(new { message = "User created successfully" });
   }
+
+  // Update
+  [HttpPut]
+  [Route("{id:int}")]
+  public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody] UpdateRequest requestModel)
+  {
+    var userFound = await _userService.GetUserByIdAsync(id);
+
+    if (userFound == null)
+    {
+      return NotFound();
+    }
+
+    if (!string.IsNullOrEmpty(requestModel.Password))
+    {
+      requestModel.Password = BCrypt.Net.BCrypt.HashPassword(requestModel.Password);
+    }
+
+    await _userService.UpdateUserAsync(requestModel, userFound);
+    
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    return Ok(new { message = "User updated successfully" });
+  }
+
+  // Delete
 }

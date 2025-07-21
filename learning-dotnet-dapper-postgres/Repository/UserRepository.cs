@@ -59,9 +59,21 @@ public class UserRepository : IUserRepository
     await connection.ExecuteAsync(sql, user);
   }
 
-  public Task UpdateUserAsync(User user)
+  public async Task UpdateUserAsync(User user)
   {
-    throw new NotImplementedException();
+    var connection = _context.CreateConnection();
+
+    var sql = """
+              UPDATE Users
+              SET Title = @Title,
+                  FirstName = @FirstName,
+                  LastName = @LastName,
+                  Email = @Email,
+                  Role = @Role,
+                  PasswordHash = @PasswordHash
+              WHERE Id = @Id
+              """;
+    await connection.ExecuteAsync(sql, user);
   }
 
   public Task DeleteUserAsync(int UserId)
