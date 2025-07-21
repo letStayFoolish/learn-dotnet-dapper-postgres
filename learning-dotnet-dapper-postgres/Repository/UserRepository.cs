@@ -18,7 +18,8 @@ public class UserRepository : IUserRepository
     using var connection = _context.CreateConnection();
 
     var sql = """
-              SELECT * FROM Users;
+              SELECT * FROM Users
+              ORDER BY Id ASC
               """;
 
     return await connection.QueryAsync<User>(sql);
@@ -76,8 +77,13 @@ public class UserRepository : IUserRepository
     await connection.ExecuteAsync(sql, user);
   }
 
-  public Task DeleteUserAsync(int UserId)
+  public async Task DeleteUserAsync(int userId)
   {
-    throw new NotImplementedException();
+    var connection = _context.CreateConnection();
+    var sql = """
+              DELETE FROM Users
+              WHERE Id = @id
+              """;
+    await connection.ExecuteAsync(sql, new { id = userId });
   }
 }

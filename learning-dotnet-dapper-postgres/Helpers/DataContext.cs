@@ -30,9 +30,9 @@ public class DataContext
   {
     // create database if it doesn't exist
     var connectionString = $"Host={_dbSettings.Server}; Database=postgres; Username={_dbSettings.UserId}; Password={_dbSettings.Password};";
-    using var connection = new NpgsqlConnection(connectionString);
-    var sqlDbCount = $"SELECT COUNT(*) FROM pg_database WHERE datname = '{_dbSettings.Database}';";
-    var dbCount = await connection.ExecuteScalarAsync<int>(sqlDbCount);
+    await using var connection = new NpgsqlConnection(connectionString);
+    var sqlDbCount = "SELECT COUNT(*) FROM pg_database WHERE datname = @dbName;";
+    var dbCount = await connection.ExecuteScalarAsync<int>(sqlDbCount, new { dbName = _dbSettings.Database });
     if (dbCount == 0)
     {
       var sql = $"CREATE DATABASE {_dbSettings.Database};";
@@ -44,11 +44,12 @@ public class DataContext
   {
     // create tables if they don't exist
     // The `using` statement ensures that the database connection is properly disposed of when it is no longer needed.
-    using var connection = CreateConnection();
+    
     await InitUsers();
 
     async Task InitUsers()
     {
+      using var connection = CreateConnection();
       // Role int => (1 = Admin, 2 = User)
       var sql = """
                 CREATE TABLE IF NOT EXISTS Users (

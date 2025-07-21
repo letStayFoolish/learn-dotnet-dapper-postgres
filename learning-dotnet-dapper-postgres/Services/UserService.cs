@@ -85,8 +85,8 @@ public class UserService : IUserService
     await _userRepository.UpdateUserAsync(userToUpdate);
   }
 
-  public Task DeleteUserAsync(int UserId)
+  public async Task DeleteUserAsync(int userId)
   {
-    throw new NotImplementedException();
+    await _userRepository.DeleteUserAsync(userId);
   }
 }

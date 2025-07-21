@@ -92,6 +92,21 @@ public class UserController : ControllerBase
 
     return Ok(new { message = "User updated successfully" });
   }
+  
+  [HttpDelete]
+  [Route("{id:int}")]
+  public async Task<IActionResult> DeleteUser([FromRoute] int id)
+  {
+    var userFound = await _userService.GetUserByIdAsync(id);
+    
+    if(userFound == null) NotFound();
 
-  // Delete
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+    
+    await _userService.DeleteUserAsync(id);
+    return Ok(new { message = "User deleted successfully" });
+  }
 }
