@@ -31,12 +31,12 @@ public class UserController : ControllerBase
   [Route("{id:int}")]
   public async Task<IActionResult> GetUser([FromRoute] int id)
   {
+    var foundUser = await _userService.GetUserByIdAsync(id);
+    
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
     }
-
-    var foundUser = await _userService.GetUserByIdAsync(id);
 
     if (foundUser == null)
     {
@@ -108,12 +108,13 @@ public class UserController : ControllerBase
     
     if(userFound == null) NotFound();
 
+    await _userService.DeleteUserAsync(id);
+    
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
     }
-    
-    await _userService.DeleteUserAsync(id);
+
     return Ok(new { message = "User deleted successfully" });
   }
 }

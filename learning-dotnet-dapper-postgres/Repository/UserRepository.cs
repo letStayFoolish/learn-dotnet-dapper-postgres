@@ -16,47 +16,40 @@ public class UserRepository : IUserRepository
   public async Task<IEnumerable<User>> GetAllAsync()
   {
     using var connection = _context.CreateConnection();
-
     var sql = """
               SELECT * FROM Users
               ORDER BY Id ASC
               """;
-
     return await connection.QueryAsync<User>(sql);
   }
 
   public async Task<User?> GetUserByIdAsync(int id)
   {
     using var connection = _context.CreateConnection();
-
     var sql = """
               SELECT * FROM Users 
               WHERE id = @id
               """;
-
     return await connection.QuerySingleOrDefaultAsync<User>(sql, new { id });
   }
 
   public async Task<User?> GetUserByEmailAsync(string email)
   {
+    using var connection = _context.CreateConnection();
     var sql = """
               SELECT * FROM Users 
               WHERE email = @email;
               """;
-    
-    using var connection = _context.CreateConnection();
     return await connection.QuerySingleOrDefaultAsync<User>(sql, new {email});
   }
 
   public async Task CreateNewUserAsync(User user)
   {
     var connection = _context.CreateConnection();
-
     var sql = """
               INSERT INTO Users (Title, FirstName, LastName, Email, Role, PasswordHash)
               VALUES (@Title, @FirstName, @LastName, @Email, @Role, @PasswordHash); 
               """;
-    
     await connection.ExecuteAsync(sql, user);
   }
 

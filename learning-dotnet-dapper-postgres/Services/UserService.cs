@@ -77,7 +77,7 @@ public class UserService : IUserService
     
     if (!string.IsNullOrEmpty(updateModel.Password))
     {
-      userToUpdate.PasswordHash = HashPasswordExtension.HashPassword(updateModel.Password);
+      userToUpdate.PasswordHash = updateModel.Password;
     }
     
     await _userRepository.UpdateUserAsync(userToUpdate);
