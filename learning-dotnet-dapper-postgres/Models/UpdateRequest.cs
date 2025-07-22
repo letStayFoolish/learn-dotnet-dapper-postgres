@@ -22,7 +22,7 @@ public class UpdateRequest
   public string? Password
   {
     get => _password;
-    set => _password = replaceEmptyWithNull(value);
+    set => _password = ReplaceEmptyWithNull(value);
   }
 
   private string? _confirmPassword;
@@ -30,12 +30,12 @@ public class UpdateRequest
   public string? ConfirmPassword 
   {
     get => _confirmPassword;
-    set => _confirmPassword = replaceEmptyWithNull(value);
+    set => _confirmPassword = ReplaceEmptyWithNull(value);
   }
 
   // helpers
 
-  private string? replaceEmptyWithNull(string? value)
+  private string? ReplaceEmptyWithNull(string? value)
   {
     // replace empty string with null to make field optional
     return string.IsNullOrEmpty(value) ? null : value;

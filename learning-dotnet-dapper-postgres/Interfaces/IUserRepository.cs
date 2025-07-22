@@ -1,5 +1,4 @@
 using learning_dotnet_dapper_postgres.Entities;
-using learning_dotnet_dapper_postgres.Models;
 
 namespace learning_dotnet_dapper_postgres.Interfaces;
 
@@ -11,5 +10,5 @@ public interface IUserRepository
   Task CreateNewUserAsync(User user);
   Task UpdateUserAsync(User user);
   // Task UpdateUserAsync(int UserId, User user);
-  Task DeleteUserAsync(int UserId);
+  Task DeleteUserAsync(int userId);
 }
